@@ -1,0 +1,127 @@
+version: '3.5'
+services:
+  web:
+    build: 
+      context: ./docker/Nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - apl
+    volumes:
+      - public-data:/ro6mysngx/public
+      - tmp-data:/ro6mysngx/tmp
+    environment:
+      TZ: Asia/Tokyo
+  apl:
+    build: .
+    command: sh docker/Rails6/scripts/launch.sh
+    volumes:
+      - .:/ro6mysngx
+      - node:/ro6mysngx/node_modules
+      - public-data:/ro6mysngx/public
+      - tmp-data:/ro6mysngx/tmp
+      - gem_data:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+    #  RAILS_ENV: test
+      TZ: Asia/Tokyo
+      RAILS_LOG_TO_STDOUT: 1
+    ports:
+      - "3000:3000"
+      - "3035:3035"
+    depends_on:
+      - db
+    stdin_open: true # for byebug
+    tty: true # for byebug
+    networks:
+      default:
+        ipv4_address: 172.18.1.7
+      app_net:
+        ipv4_address: '172.20.0.3'
+  db:
+    build: 
+      context: ./docker/MySQL
+    volumes:
+      - ./db:/usr/local/share/db
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass
+      - TZ=Asia/Tokyo
+      - MYSQL_TCP_PORT=3307
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    expose:
+     - "3307"
+    ports:
+      - "3307:3306"
+    networks:
+      app_net: #後述のapp_netネットワーク空間の以下のIPを使用するよう設定
+        ipv4_address: '172.20.0.2'
+    restart: always
+  keyrock:
+    image: fiware/idm:7.6.0
+    container_name: fiware-keyrock
+    hostname: keyrock
+    networks:
+        default:
+            ipv4_address: 172.18.1.5
+    depends_on:
+        - mysql-db
+    ports:
+        - '3001:3001'
+        - '1443:1443'
+    environment:
+        - DEBUG=idm:*
+        - IDM_DB_HOST=mysql-db
+        - IDM_HOST=http://localhost:3001
+        - IDM_PORT=3001
+        # Development use only
+        # Use Docker Secrets for Sensitive Data
+        - IDM_DB_PASS=secret
+        - IDM_DB_USER=root
+        - IDM_ADMIN_USER=admin
+        - IDM_ADMIN_EMAIL=admin@test.com
+        - IDM_ADMIN_PASS=1234
+        # If sending eMails point to any STMP server
+        #- IDM_EMAIL_HOST=mailer
+        #- IDM_EMAIL_PORT=25
+  mysql-db:
+    restart: always
+    image: mysql:5.7
+    hostname: mysql-db
+    container_name: db-mysql
+    expose:
+        - '3306'
+    ports:
+        - '3306:3306'
+    networks:
+        default:
+            ipv4_address: 172.18.1.6
+    environment:
+        # Development use only
+        # Use Docker Secrets for Sensitive Data
+        - 'MYSQL_ROOT_PASSWORD=secret'
+        - 'MYSQL_ROOT_HOST=172.18.1.5'
+    volumes:
+        - mysql-db:/var/lib/mysql
+    
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
+  #app_netというネットワーク空間を定義
+  app_net:
+    driver: bridge #bridgeネットワークへ接続
+    ipam: #IP設定
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24 #Subnetを定義    
+volumes: 
+    db:
+    public-data:
+    tmp-data:
+    node:
+    gem_data:
+    mysql-db: ~
