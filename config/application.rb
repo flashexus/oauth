@@ -18,5 +18,12 @@ module Ro6mysngx
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    if Rails.env.development?
+      config.autoload_paths += %W(#{config.root}/lib/omniauth/strategies)
+      config.autoload_paths += %W(#{config.root}/lib/omniauth)
+      config.autoload_paths += %W(#{config.root}/lib)
+    end
+
   end
 end

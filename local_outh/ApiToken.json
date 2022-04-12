@@ -1,0 +1,12 @@
+HTTP/1.1 201 Created
+Cache-Control: no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0
+X-Subject-Token: 6ab67484-e703-4e4c-9cf0-7602207fe0f2
+Content-Type: application/json; charset=utf-8
+Content-Length: 138
+ETag: W/"8a-yxxTJY4Evkwyv1rFSsJ6VxopX94"
+Set-Cookie: session=eyJyZWRpciI6Ii8ifQ==; path=/; expires=Mon, 11 Apr 2022 02:42:59 GMT; httponly
+Set-Cookie: session.sig=TqcHvLKCvDVxuMk5xVfrKEP-GSQ; path=/; expires=Mon, 11 Apr 2022 02:42:59 GMT; httponly
+Date: Mon, 11 Apr 2022 01:42:59 GMT
+Connection: keep-alive
+
+{"token":{"methods":["password"],"expires_at":"2022-04-11T02:42:59.464Z"},"idm_authorization_config":{"level":"basic","authzforce":false}}

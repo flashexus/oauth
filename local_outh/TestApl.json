@@ -1,0 +1,15 @@
+{
+	"application": {
+		"id": "8f0e5071-350c-4db2-b737-d1dd1bb0428f",
+		"secret": "464101ef-7cc4-44df-9bec-5bd528ce629e",
+		"image": "default",
+		"jwt_secret": "bfa0134af2d62cd9",
+		"name": "Test_application 1",
+		"description": "description",
+		"redirect_uri": "http://localhost/users/sign_in",
+		"url": "http://keyrock:3001",
+		"grant_type": "password,authorization_code,implicit",
+		"token_types": "jwt,permanent,bearer",
+		"response_type": "code,token"
+	}
+}
