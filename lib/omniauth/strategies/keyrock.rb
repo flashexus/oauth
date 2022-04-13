@@ -1,29 +1,30 @@
 module OmniAuth
   module Strategies
-    class Doorkeeper < OmniAuth::Strategies::OAuth2
-  #   class Doorkeeper
+    class Keyrock < OmniAuth::Strategies::OAuth2
       include OmniAuth::Strategy
-      option :name, :doorkeeper # strategyの名前　ここで指定した名前をdeviseで呼び出す
+      option :name, "keyrock" # strategyの名前ここで指定した名前をdeviseで呼び出す
       option :client_options, {
         site: 'http://keyrock:3001',
         authorize_url: 'http://localhost:3001/oauth2/authorize',
         token_url: 'http://keyrock:3001/oauth2/token',
-        ssl: { verify: false } 
+      #  ssl: { verify: false } 
       }
 
       # uidとして設定するデータを指定
-      uid { raw_info['user']['id'] }
+      uid { raw_info['id'] }
       # providerから送られてきたデータの内、どれを使いたいか
       info do
-        { email: raw_info['user']['email'] }
+        { 
+          email: raw_info['email'],
+          name: raw_info['username'],
+          provider: "keyrock"
+         }
       end
 
       # providerのAPIを叩いて、データを取ってくる
       def raw_info
         p '------cool raw_info --------'
-        p access_token
         @raw_info ||= access_token.get('/user').parsed
-
         p @raw_info
       end
 
@@ -41,7 +42,7 @@ module OmniAuth
       # リダイレクトURLを固定（デフォルトではクエリパラメータが付加されるため）
       def callback_url
         #full_host + script_name + callback_path
-        "http://localhost:3000/users/auth/doorkeeper/callback"
+        "http://localhost:3000/users/auth/keyrock/callback"
       end
     end
   end

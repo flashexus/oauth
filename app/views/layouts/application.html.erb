@@ -11,15 +11,15 @@
   </head>
 
   <body>
-    <header>
+    <header style="margin-top:5rem;">
       <nav>
           <% if user_signed_in? %>
-            <strong><%= link_to current_user.username, pages_show_path %></strong>
+            <strong><%= link_to current_user.name, pages_show_path %></strong>
             <%= link_to 'プロフィール変更', edit_user_registration_path %>
             <%= link_to 'ログアウト', destroy_user_session_path, method: :delete %>
           <% else %>
             <%= link_to 'サインアップ', new_user_registration_path %>
-            <%= link_to 'オレオレアカウントでログイン', user_doorkeeper_omniauth_authorize_path, method: :post %>
+            <%= link_to 'Keyrockでログイン', user_keyrock_omniauth_authorize_path, method: :post %>
             <%= link_to 'ログイン', new_user_session_path %>
           <% end %>
       </nav>

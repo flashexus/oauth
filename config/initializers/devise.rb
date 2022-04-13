@@ -314,11 +314,9 @@ Devise.setup do |config|
   #   config.omniauth :mock, '8f0e5071-350c-4db2-b737-d1dd1bb0428f', '464101ef-7cc4-44df-9bec-5bd528ce629e', client_options: { site: 'http://localhost:3000' }
   # end
 
-  require File.expand_path('lib/omniauth/strategies/doorkeeper', Rails.root)
+  require File.expand_path('lib/omniauth/strategies/keyrock', Rails.root)
   Devise.setup do |config|
-     config.omniauth(:doorkeeper, '8f0e5071-350c-4db2-b737-d1dd1bb0428f', '464101ef-7cc4-44df-9bec-5bd528ce629e')
-#      config.omniauth :doorkeeper, {'8f0e5071-350c-4db2-b737-d1dd1bb0428f', '464101ef-7cc4-44df-9bec-5bd528ce629e'}
-
+     config.omniauth("keyrock", '8f0e5071-350c-4db2-b737-d1dd1bb0428f', '464101ef-7cc4-44df-9bec-5bd528ce629e')
     end
 
 end
